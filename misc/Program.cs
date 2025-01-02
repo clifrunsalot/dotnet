@@ -86,12 +86,12 @@ namespace trashthis
             // Working with enums. 
             foreach (int i in Enum.GetValues(typeof(MathOperation)))
             {
-                Console.WriteLine($"Playing with enums: Enum value: {i}");
+                Console.WriteLine($"Playing with enums: Enum value: {i}, Enum name: {Enum.GetName(typeof(MathOperation), i)}");
             }
 
             foreach (string s in Enum.GetNames(typeof(MathOperation)))
             {
-                Console.WriteLine($"Playing with enums: Enum name: {s}");
+                Console.WriteLine($"Playing with enums: Enum name: {s}, Enum value: {Enum.Parse(typeof(MathOperation), s)}");
             }
         }
 
