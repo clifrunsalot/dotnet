@@ -14,32 +14,109 @@ namespace Playground
         }
     }
 
+    // Interfaces.
     interface IPersonalInfo
     {
-        protected string name { get; set; }
-        protected int age { get; set; }
+        protected string username { get; set; }
 
-        public void PromptForInfo();
+        protected int age { get; set; }
 
         public void DisplayInfo();
     }
 
     public class Person : IPersonalInfo
     {
-        public string name { get; set; }
+        // This should be unique to the class.
+        public string username { get; set; }
         public int age { get; set; }
+        public string occupation { get; set; }
 
-        public void PromptForInfo()
+        public Person(string username, int age, string occupation)
         {
-            Console.WriteLine("Enter your name: ");
-            this.name = "Anonymous";
-            Console.WriteLine("Enter your age: ");
-            this.age = 45;
+            this.username = username;
+            this.age = age;
+            this.occupation = occupation;
         }
 
         public void DisplayInfo()
         {
-            Console.WriteLine($"Name: {name}, Age: {age}");
+            Console.WriteLine("{0,10} {1,4} {2,-20}", username, age, occupation);
+        }
+    }
+
+    // Indexers.
+    public class Company
+    {
+        private Person[] employees = new Person[5];
+        public Company(Person[] people)
+        {
+            this.employees = people;
+        }
+
+        public Person this[int index]
+        {
+            // return the value of the indexer.
+            get
+            {
+                return employees[index];
+            }
+            // set the value of the indexer. value is a Person object.
+            set
+            {
+                foreach (Person p in employees)
+                {
+                    if (p.username == value.username)
+                    {
+                        Console.WriteLine("Username already exists.");
+                        return;
+                    }
+                }
+                employees[index] = value;
+            }
+        }
+
+        public Person this[int index, string username]
+        {
+            // set value of username at index 
+            set
+            {
+                foreach (Person p in employees)
+                {
+                    if (p.username == username)
+                    {
+                        Console.WriteLine("Username {0} already exists.", username);
+                        return;
+                    }
+                }
+                Console.WriteLine("Updated Username {0}.", username);
+                employees[index].username = username;
+            }
+        }
+
+        public Person this[string username, int age]
+        {
+            // set value of age at index 
+            set
+            {
+                foreach (Person p in employees)
+                {
+                    if (p.username == username)
+                    {
+                        Console.WriteLine("Updated username: {0}.", username);
+                        p.age = age;
+                        return;
+                    }
+                }
+                Console.WriteLine("Username {0} does not exist.", username);
+            }
+        }
+
+        public void DisplayEmployees()
+        {
+            foreach (Person p in employees)
+            {
+                p.DisplayInfo();
+            }
         }
     }
 
@@ -174,9 +251,34 @@ namespace Playground
         // A class can inherit
         void PlayingwithInterfaces()
         {
-            Person p = new Person();
-            p.PromptForInfo();
-            p.DisplayInfo();
+            Person[] people = new Person[5];
+            people[0] = new Person("John", 25, "Software Engineer");
+            people[1] = new Person("Jane", 30, "Doctor");
+            people[2] = new Person("Jack", 35, "Lawyer");
+            people[3] = new Person("Jill", 40, "Teacher");
+            people[4] = new Person("James", 45, "Pilot");
+            foreach (Person p in people)
+            {
+                p.DisplayInfo();
+            }
+        }
+
+        void PlayingwithIndexers()
+        {
+            Console.WriteLine("Playing with indexers:");
+            Person[] people = new Person[5];
+            people[0] = new Person("Alice", 28, "Data Scientist");
+            people[1] = new Person("Bob", 32, "Architect");
+            people[2] = new Person("Charlie", 38, "Chef");
+            people[3] = new Person("Diana", 42, "Nurse");
+            people[4] = new Person("Eve", 50, "Artist");
+            Company c = new Company(people);
+            c.DisplayEmployees();
+            // Change "Eve" to "Rhonda".
+            c[4, "Rhonda"] = new Person("Rhonda", 55, "Artist");
+            // Attempt to update "Bobi", who doesn't exist. 
+            c["Bobi", 100] = new Person("Bob", 100, "Architect");
+            c.DisplayEmployees();
         }
 
         // Main method.
@@ -194,6 +296,8 @@ namespace Playground
             // Interfaces
             p.PlayingwithInterfaces();
 
+            // Indexers
+            p.PlayingwithIndexers();
         }
 
     }
