@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace trashthis
+namespace Playground
 {
 
     // Extension methods.
@@ -11,6 +11,35 @@ namespace trashthis
         public static decimal MultiplyTwoNumbers(this Program p, int x, int y)
         {
             return x * y;
+        }
+    }
+
+    interface IPersonalInfo
+    {
+        protected string name { get; set; }
+        protected int age { get; set; }
+
+        public void PromptForInfo();
+
+        public void DisplayInfo();
+    }
+
+    public class Person : IPersonalInfo
+    {
+        public string name { get; set; }
+        public int age { get; set; }
+
+        public void PromptForInfo()
+        {
+            Console.WriteLine("Enter your name: ");
+            this.name = "Anonymous";
+            Console.WriteLine("Enter your age: ");
+            this.age = 45;
+        }
+
+        public void DisplayInfo()
+        {
+            Console.WriteLine($"Name: {name}, Age: {age}");
         }
     }
 
@@ -134,6 +163,22 @@ namespace trashthis
             Console.WriteLine($"Playing with extension methods: {p.MultiplyTwoNumbers(5, 10)}");
         }
 
+        /****************************************
+        * Interfaces
+        *****************************************/
+
+        // Interfaces are used to define a contract that a class must implement. 
+        // Interfaces can contain methods, properties, events, and indexers. 
+        // Interfaces cannot contain fields, constructors, destructors, or static members. 
+        // Interfaces can inherit from other interfaces. 
+        // A class can inherit
+        void PlayingwithInterfaces()
+        {
+            Person p = new Person();
+            p.PromptForInfo();
+            p.DisplayInfo();
+        }
+
         // Main method.
         static void Main(string[] args)
         {
@@ -145,6 +190,9 @@ namespace trashthis
 
             // Static
             PlayingWithExtensionMethods(p);
+
+            // Interfaces
+            p.PlayingwithInterfaces();
 
         }
 
