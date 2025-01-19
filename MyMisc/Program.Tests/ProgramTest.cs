@@ -2,7 +2,7 @@ using System;
 using Xunit;
 using Playground;
 
-namespace Playground.Tests
+namespace Program.Tests
 {
     public class ProgramTest
     {
@@ -10,7 +10,7 @@ namespace Playground.Tests
         public void TestAddTwoNumbers()
         {
             // Arrange
-            Program p = new Program();
+            Playground.Program p = new Playground.Program();
             decimal expected = 15;
 
             // Act
@@ -24,7 +24,7 @@ namespace Playground.Tests
         public void TestSubtractTwoNumbers()
         {
             // Arrange
-            Program p = new Program();
+            Playground.Program p = new Playground.Program();
             decimal expected = -5;
 
             // Act
@@ -38,7 +38,7 @@ namespace Playground.Tests
         public void TestMultiplyTwoNumbersExtensionMethod()
         {
             // Arrange
-            Program p = new Program();
+            Playground.Program p = new Playground.Program();
             decimal expected = 50;
 
             // Act
@@ -91,6 +91,7 @@ namespace Playground.Tests
         [Fact]
         public void TestCompanyIndexerUpdateAge()
         {
+
             // Arrange
             Person[] people = new Person[5];
             people[0] = new Person("Alice", "28", "Data Scientist");
@@ -113,7 +114,7 @@ namespace Playground.Tests
         public void TestGetGreaterValue()
         {
             // Arrange
-            Program.MyGenericClass<int> mgc = new Program.MyGenericClass<int>();
+            Playground.Program.MyGenericClass<int> mgc = new Playground.Program.MyGenericClass<int>();
             int expected = 10;
 
             // Act
