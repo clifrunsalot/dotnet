@@ -9,32 +9,41 @@ namespace AsyncPlayground
 
         public async Task DownloadDataAsync()
         {
-            Console.WriteLine("DownloadDataAsync: Start Downloading data...");
             for (int i = 0; i < 5; i++)
             {
-                Console.WriteLine($"DownloadDataAsync: Downloading data {i}...");
+                Console.WriteLine($"{DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff tt")}   A-{i}");
                 await Task.Delay(1000);
             }
-            Console.WriteLine("DownloadDataAsync: Stop Downloaded data...");
         }
 
         public async Task DownloadDataAsync2()
         {
-            Console.WriteLine("DownloadDataAsync2:                          Start Downloading data...");
             for (int i = 0; i < 5; i++)
             {
-                Console.WriteLine($"DownloadDataAsync2:                          Downloading data {i}...");
+                Console.WriteLine($"{DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff tt")}               B-{i}");
                 await Task.Delay(500);
             }
-            Console.WriteLine("DownloadDataAsync2:                          Stop Downloaded data...");
+        }
+
+        public async Task<string> CountingData()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine($"{DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff tt")}                         C-{i}");
+                await Task.Delay(300);
+            }
+            // Ignore the return value
+            return "CountingData:      Total data counted: 999";
         }
 
         public static async Task Main(string[] args)
         {
+            Console.WriteLine("                           Download1  Download2  Counting");
             Program p = new Program();
             Task task1 = p.DownloadDataAsync();
             Task task2 = p.DownloadDataAsync2();
-            await Task.WhenAll(task1, task2);
+            Task<string> task3 = p.CountingData();
+            await Task.WhenAll(task1, task2, task3);
 
         }
     }
