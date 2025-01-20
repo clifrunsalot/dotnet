@@ -24,7 +24,8 @@ namespace LibraryApp
                 Console.WriteLine("1. View Books");
                 Console.WriteLine("2. Add Book");
                 Console.WriteLine("3. Remove Book");
-                Console.WriteLine("4. Exit");
+                Console.WriteLine("4. Search Book");
+                Console.WriteLine("5. Exit");
                 Console.Write("Choose an option: ");
                 string choice = Console.ReadLine();
 
@@ -46,6 +47,9 @@ namespace LibraryApp
                         RemoveBook();
                         break;
                     case "4":
+                        SearchBook();
+                        break;
+                    case "5":
                         Environment.Exit(0);
                         break;
                     default:
@@ -114,6 +118,7 @@ namespace LibraryApp
             }
             PromptRemoveBook();
         }
+
         public static void PromptRemoveBook()
         {
             Console.Write("\nEnter the index of the book to remove: ");
@@ -135,6 +140,26 @@ namespace LibraryApp
             else
             {
                 Console.WriteLine("Invalid input. Please enter a valid number.");
+            }
+        }
+
+        public static void SearchBook()
+        {
+            Console.Write("\nEnter the name of the book to search: ");
+            string bookName = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(bookName))
+            {
+                Console.WriteLine("Book name cannot be empty. Please try again.");
+                return;
+            }
+
+            if (bookSet.Contains(bookName))
+            {
+                Console.WriteLine($"'{bookName}' is available in the library.");
+            }
+            else
+            {
+                Console.WriteLine($"'{bookName}' is not available in the library.");
             }
         }
     }
