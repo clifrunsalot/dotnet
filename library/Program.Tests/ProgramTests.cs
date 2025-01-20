@@ -27,7 +27,7 @@ namespace LibraryApp.Tests
             }
         }
 
-        // This fails because it doesn't handle the user input for removing a book title.
+        [Fact]
         public void TestAddBook()
         {
             // Arrange
@@ -110,7 +110,7 @@ namespace LibraryApp.Tests
             // Arrange
             var books = new List<string> { "Book 1", "Book 2", "Book 3", "Book 4", "Book 5" };
             var bookIndex = "10";
-            var expectedOutput = "Invalid index. Please try again.";
+            var expectedOutput = "Index out of range. Please try again.";
 
             using (var sw = new StringWriter())
             {

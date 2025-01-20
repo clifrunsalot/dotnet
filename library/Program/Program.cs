@@ -14,6 +14,8 @@ namespace LibraryApp
             "Book 5"
         };
 
+        public static HashSet<string> bookSet = new HashSet<string>(books);
+
         public static void Main(string[] args)
         {
             while (true)
@@ -26,9 +28,9 @@ namespace LibraryApp
                 Console.Write("Choose an option: ");
                 string choice = Console.ReadLine();
 
-                if (choice == null)
+                if (string.IsNullOrWhiteSpace(choice))
                 {
-                    Console.WriteLine("Input cannot be null. Please try again.");
+                    Console.WriteLine("Input cannot be empty. Please try again.");
                     continue;
                 }
 
@@ -44,7 +46,8 @@ namespace LibraryApp
                         RemoveBook();
                         break;
                     case "4":
-                        return;
+                        Environment.Exit(0);
+                        break;
                     default:
                         Console.WriteLine("Invalid option. Please try again.");
                         break;
@@ -54,10 +57,17 @@ namespace LibraryApp
 
         public static void ViewBooks()
         {
-            Console.WriteLine("\nBooks in the library:");
-            for (int i = 0; i < books.Count; i++)
+            if (books.Count == 0)
             {
-                Console.WriteLine($"{i + 1}. {books[i]}");
+                Console.WriteLine("\nThe library is currently empty.");
+            }
+            else
+            {
+                Console.WriteLine("\nBooks in the library:");
+                for (int i = 0; i < books.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {books[i]}");
+                }
             }
         }
 
@@ -65,51 +75,66 @@ namespace LibraryApp
         {
             Console.Write("\nEnter the name of the book to add: ");
             string bookName = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(bookName))
+            if (string.IsNullOrWhiteSpace(bookName) || !ContainsAlphanumeric(bookName))
             {
-                Console.WriteLine("Book name cannot be empty. Please try again.");
+                Console.WriteLine("Book name must contain at least one alphanumeric character. Please try again.");
                 return;
             }
 
-            if (books.Contains(bookName))
+            if (bookSet.Contains(bookName))
             {
                 Console.WriteLine($"'{bookName}' already exists in the library.");
             }
             else
             {
                 books.Add(bookName);
+                bookSet.Add(bookName);
                 Console.WriteLine($"'{bookName}' has been added to the library.");
-                PromptRemoveBook(bookName);
             }
+        }
+
+        private static bool ContainsAlphanumeric(string str)
+        {
+            foreach (char c in str)
+            {
+                if (char.IsLetterOrDigit(c))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static void RemoveBook()
         {
-            PromptRemoveBook(null);
+            if (books.Count == 0)
+            {
+                Console.WriteLine("\nThe library is currently empty.");
+                return;
+            }
+            PromptRemoveBook();
         }
-
-        public static void PromptRemoveBook(string addedBookName)
+        public static void PromptRemoveBook()
         {
-            ViewBooks();
             Console.Write("\nEnter the index of the book to remove: ");
             string input = Console.ReadLine();
-            if (int.TryParse(input, out int index) && index > 0 && index <= books.Count)
+            if (int.TryParse(input, out int index))
             {
-                string bookName = books[index - 1];
-                books.RemoveAt(index - 1);
-                Console.WriteLine($"'{bookName}' has been removed from the library.");
-            }
-            else
-            {
-                if (addedBookName != null)
+                if (index > 0 && index <= books.Count)
                 {
-                    Console.WriteLine($"Invalid index. '{addedBookName}' will be removed and the previous version of the library restored.");
-                    books.Remove(addedBookName);
+                    string bookName = books[index - 1];
+                    books.RemoveAt(index - 1);
+                    bookSet.Remove(bookName);
+                    Console.WriteLine($"'{bookName}' has been removed from the library.");
                 }
                 else
                 {
-                    Console.WriteLine("Invalid index. Please try again.");
+                    Console.WriteLine("Index out of range. Please try again.");
                 }
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a valid number.");
             }
         }
     }
