@@ -8,7 +8,7 @@ namespace LibraryApp.Tests
     public class ProgramTests
     {
         [Fact]
-        public void TestViewBooks()
+        public void TestViewAvailableBooks()
         {
             // Arrange
             var books = new List<string> { "Book 1", "Book 2", "Book 3", "Book 4", "Book 5" };
@@ -19,7 +19,7 @@ namespace LibraryApp.Tests
                 Console.SetOut(sw);
 
                 // Act
-                Program.ViewBooks();
+                Program.ViewAvailableBooks();
 
                 // Assert
                 var result = sw.ToString().Trim();
