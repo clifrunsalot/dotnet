@@ -5,16 +5,16 @@ namespace LibraryApp
 {
     public class Program
     {
-        public static List<string> books = new List<string>
+        public static List<(string bookName, bool isBorrowed)> books = new List<(string, bool)>
         {
-            "Book 1",
-            "Book 2",
-            "Book 3",
-            "Book 4",
-            "Book 5"
+            ("Book 1", false),
+            ("Book 2", false),
+            ("Book 3", false),
+            ("Book 4", false),
+            ("Book 5", false)
         };
 
-        public static HashSet<string> bookSet = new HashSet<string>(books);
+        public static HashSet<string> bookSet = new HashSet<string>(books.ConvertAll(b => b.bookName));
         public static List<string> borrowedBooks = new List<string>();
 
         public static void Main(string[] args)
@@ -83,13 +83,20 @@ namespace LibraryApp
                 Console.WriteLine("\nBooks in the library:");
                 for (int i = 0; i < books.Count; i++)
                 {
-                    Console.WriteLine($"{i + 1}. {books[i]}");
+                    string status = books[i].isBorrowed ? " (Borrowed)" : "";
+                    Console.WriteLine($"{i + 1}. {books[i].bookName}{status}");
                 }
             }
         }
 
         public static void AddBook()
         {
+            if (books.Count >= 5)
+            {
+                Console.WriteLine("The library cannot hold more than 5 books.");
+                return;
+            }
+
             Console.Write("\nEnter the name of the book to add: ");
             string bookName = Console.ReadLine() ?? "";
             if (string.IsNullOrWhiteSpace(bookName) || !ContainsAlphanumeric(bookName))
@@ -104,7 +111,7 @@ namespace LibraryApp
             }
             else
             {
-                books.Add(bookName);
+                books.Add((bookName, false));
                 bookSet.Add(bookName);
                 Console.WriteLine($"'{bookName}' has been added to the library.");
             }
@@ -129,7 +136,34 @@ namespace LibraryApp
                 Console.WriteLine("\nThe library is currently empty.");
                 return;
             }
-            PromptRemoveBook();
+
+            Console.Write("\nEnter the index of the book to remove: ");
+            string input = Console.ReadLine() ?? "";
+            if (int.TryParse(input, out int index))
+            {
+                if (index > 0 && index <= books.Count)
+                {
+                    var book = books[index - 1];
+                    if (book.isBorrowed)
+                    {
+                        Console.WriteLine($"'{book.bookName}' is currently borrowed and cannot be removed.");
+                    }
+                    else
+                    {
+                        books.RemoveAt(index - 1);
+                        bookSet.Remove(book.bookName);
+                        Console.WriteLine($"'{book.bookName}' has been removed from the library.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Index out of range. Please try again.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a valid number.");
+            }
         }
 
         public static void PromptRemoveBook()
@@ -140,7 +174,7 @@ namespace LibraryApp
             {
                 if (index > 0 && index <= books.Count)
                 {
-                    string bookName = books[index - 1];
+                    string bookName = books[index - 1].bookName;
                     books.RemoveAt(index - 1);
                     bookSet.Remove(bookName);
                     Console.WriteLine($"'{bookName}' has been removed from the library.");
@@ -167,7 +201,7 @@ namespace LibraryApp
             }
 
             bool bookFound = false;
-            foreach (string book in bookSet)
+            foreach (var book in bookSet)
             {
                 if (string.Equals(book, bookName, StringComparison.OrdinalIgnoreCase))
                 {
@@ -202,22 +236,12 @@ namespace LibraryApp
                 return;
             }
 
-            string? bookToBorrow = null;
-            foreach (var book in bookSet)
+            var bookToBorrow = books.Find(b => string.Equals(b.bookName, bookName, StringComparison.OrdinalIgnoreCase) && !b.isBorrowed);
+            if (bookToBorrow.bookName != null)
             {
-                if (string.Equals(book, bookName, StringComparison.OrdinalIgnoreCase))
-                {
-                    bookToBorrow = book;
-                    break;
-                }
-            }
-
-            if (bookToBorrow != null && !borrowedBooks.Exists(b => b.Equals(bookToBorrow, StringComparison.OrdinalIgnoreCase)))
-            {
-                borrowedBooks.Add(bookToBorrow);
-                books.Remove(bookToBorrow);
-                bookSet.Remove(bookToBorrow);
-                Console.WriteLine($"You have borrowed '{bookToBorrow}'.");
+                borrowedBooks.Add(bookToBorrow.bookName);
+                books[books.IndexOf(bookToBorrow)] = (bookToBorrow.bookName, true);
+                Console.WriteLine($"You have borrowed '{bookToBorrow.bookName}'.");
             }
             else
             {
@@ -245,8 +269,8 @@ namespace LibraryApp
             if (bookToReturn != null)
             {
                 borrowedBooks.Remove(bookToReturn);
-                books.Add(bookToReturn);
-                bookSet.Add(bookToReturn);
+                var bookIndex = books.FindIndex(b => b.bookName.Equals(bookToReturn, StringComparison.OrdinalIgnoreCase));
+                books[bookIndex] = (bookToReturn, false);
                 Console.WriteLine($"You have returned '{bookToReturn}'.");
             }
             else
