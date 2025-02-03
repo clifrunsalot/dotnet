@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microservice2.Data;
+using Microservice2.Models;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Microservice2.Controllers
 {
@@ -7,16 +11,26 @@ namespace Microservice2.Controllers
     [Route("api/[controller]")]
     public class Data2Controller : ControllerBase
     {
-        [HttpGet]
-        public IActionResult GetData()
-        {
-            var data = new List<object>
-            {
-                new { Id = 1, Name = "Item1 from Microservice2" },
-                new { Id = 2, Name = "Item2 from Microservice2" }
-            };
+        private readonly ApplicationDbContext _context;
 
+        public Data2Controller(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetData()
+        {
+            var data = await Task.Run(() => _context.DataItems.ToList());
             return Ok(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostData([FromBody] DataItem dataItem)
+        {
+            _context.DataItems.Add(dataItem);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetData), new { id = dataItem.Id }, dataItem);
         }
     }
 }
